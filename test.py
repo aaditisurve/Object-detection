@@ -80,8 +80,7 @@ while True:
         boxes = r.boxes
         
         for box in boxes:
-            x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
             w, h = x2 - x1, y2 - y1
             cvzone.cornerRect(img, (x1, y1, w, h))
             
@@ -91,11 +90,11 @@ while True:
             # Class Name
             cls = int(box.cls[0])
             
-            # Estimate distance to the detected object (for example, assuming person height for now)
+            # Estimate distance to the detected object
             distance = estimate_distance(x1, y1, x2, y2)
 
-            # Check if the detected object is critical (e.g., person or vehicle) and too close
-            if classNames[cls] in ['person', 'car', 'bicycle'] and conf > 0.5:
+            # Check if the object is too close, regardless of the class
+            if conf > 0.5:  # You can adjust the confidence threshold as needed
                 if is_too_close(distance):
                     trigger_audio_alert(f'{classNames[cls]} is too close! Distance: {distance} meters')
 
